@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  ngnix:
+    container_name: nginx
+    build: ./requitments/ninx
+    image: nginx:inception
+    env_file: .env
+    ports:
+      - "443:443"
+
