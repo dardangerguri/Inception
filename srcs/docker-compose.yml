@@ -6,6 +6,54 @@ services:
     build: ./requitments/ninx
     image: nginx:inception
     env_file: .env
+    restart: always
+    depends_on:
+      - wordpress
     ports:
       - "443:443"
+    networks:
+      - inception
+    volumes:
+      - wordpress_data:/var/www/html
 
+  mariadb:
+    container_name: mariadb
+    build: ./requitments/mariadb
+    image: mariadb:inception
+    env_file: .env
+    restart: always
+    networks:
+      - inception
+    volumes:
+      - mariadb_data:/var/www/mysql
+
+  wordpress:
+    container_name: wordpress
+    build: ./requitments/wordpress
+    image: wordpress:inception
+    env_file: .env
+    restart: always
+    depends_on:
+      - mariadb
+    networks:
+      - inception
+    volumes:
+      - wordpress_data:/var/www/html
+
+  volumes:
+    maria_db_data:
+      driver: local
+      driver_opts:
+        type: none
+        device: /home/dgerguri/data/mariadb_data
+        o: bind
+    wordpress_data:
+      driver: local
+      driver_opts:
+        type: none
+        device: /home/dgerguri/data/wordpress_data
+        o: bind
+
+    networks:
+      inception:
+        name: inception
