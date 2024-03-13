@@ -1,27 +1,29 @@
-# Use the official Alpine Linux 3.18 image as the base image
+# Use the Alpine Linux 3.18 image as the base image
 FROM	alpine:3.18
 
-# Install NGINX and create necessary directories https://wiki.alpinelinux.org/wiki/Nginx#Installation
-RUN		apk update &&\
-		apk add nginx &&\
-		apk add openssl &&\
-		mkdir -p /etc/nginx/ssl
+# Install NGINX and SSL
+RUN		apk update && \
+		apk add nginx && \
+		apk add openssl
 
-# Generate SSL certificate and key without a password
-# RUN 	openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-# 		-out /etc/nginx/ssl/inception.crt \
-# 		-keyout /etc/nginx/ssl/inception.key \
-# 		-subj "/C=FI/ST=Helsinki/L=Helsinki/O=Hive Helsinki/OU=dgerguri/CN=dgerguri.42.fr/UID=dgerguri"
+# Create directories to store the SSL certificates and the PID
+RUN		mkdir -p /etc/nginx/ssl && \
+		mkdir -p /run/nginx
 
-COPY 	./tools/tools.sh .
+# Add a new user within the container
+RUN		adduser -D -H -s /sbin/nologin www
+#-g www -G www www
 
-RUN		chmod +x tools.sh
-
+# Copy NGINX configuration to the container
 COPY 	conf/nginx.conf /etc/nginx/nginx.conf
+RUN		chmod 644 /etc/nginx/nginx.conf
 
-# Expose port
-EXPOSE 443
+# Copy tools.sh script from the 'tools' directory to the container
+COPY 	tools/tools.sh .
+RUN 	chmod +x tools.sh
+
+# Expose port for HTTPS
+EXPOSE 	443
 
 # Command to start NGINX
-# CMD ["nginx", "-g", "daemon off;"]
 ENTRYPOINT ["sh", "tools.sh"]
