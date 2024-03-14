@@ -12,7 +12,6 @@ RUN		mkdir -p /etc/nginx/ssl && \
 
 # Add a new user within the container
 RUN		adduser -D -H -s /sbin/nologin www
-#-g www -G www www
 
 # Copy NGINX configuration to the container
 COPY 	conf/nginx.conf /etc/nginx/nginx.conf
