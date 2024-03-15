@@ -6,14 +6,16 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/dgerguri/data/mariadb_data
+      # device: /home/dgerguri/data/mariadb_data
+      device: /Users/dardangerguri/data/mariadb_data
       o: bind
   wordpress_data:
     name: wordpress_data
     driver: local
     driver_opts:
       type: none
-      device: /home/dgerguri/data/wordpress_data
+      # device: /home/dgerguri/data/wordpress_data
+      device: /Users/dardangerguri/data/wordpress_data
       o: bind
 
 networks:
@@ -21,42 +23,40 @@ networks:
     name: inception
 
 services:
-  nginx:
-    container_name: nginx
-    build: ./requirements/nginx
-    env_file: .env
-    restart: always
-    depends_on:
-      - wordpress
-    ports:
-      - "443:443"
-    networks:
-      - inception
-    volumes:
-      - wordpress_data:/var/www/html
+  # nginx:
+  #   container_name: nginx
+  #   # build: ./requirements/nginx
+  #   image: nginx:latest
+  #   env_file: .env
+  #   restart: always
+  #   depends_on:
+  #     - wordpress
+  #   ports:
+  #     - "443:443"
+  #   networks:
+  #     - inception
+  #   volumes:
+  #     - wordpress_data:/var/www/html
 
-  wordpress:
-    container_name: wordpress
-    image: wordpress:latest
-    environment:
-      WORDPRESS_DB_HOST: mariadb
-      WORDPRESS_DB_USER: root
-      WORDPRESS_DB_PASSWORD: example_password
-      WORDPRESS_DB_NAME: wordpress
-    depends_on:
-      - mariadb
-    networks:
-      - inception
-    volumes:
-      - wordpress_data:/var/www/html
+  # wordpress:
+  #   container_name: wordpress
+  #   # build: ./requirements/wordpress
+  #   # image: wordpress:latest
+  #   env_file: .env
+  #   depends_on:
+  #     - mariadb
+  #   networks:
+  #     - inception
+  #   volumes:
+  #     - wordpress_data:/var/www/html
+  #   restart: always
 
   mariadb:
     container_name: mariadb
-    image: mariadb:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: example_password
-      MYSQL_DATABASE: wordpress
+    build: ./requirements/mariadb
+    env_file: .env
     networks:
       - inception
     volumes:
       - mariadb_data:/var/www/mysql
+    restart: always
