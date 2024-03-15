@@ -1,6 +1,6 @@
 # MySQL Server Configuration
-
 [mysqld]
+
 # MySQL user
 user = mysql
 

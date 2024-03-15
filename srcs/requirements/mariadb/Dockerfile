@@ -3,10 +3,10 @@ FROM	alpine:3.18
 
 # Install MariaDB
 RUN		apk update && \
-		apk add mysql mysql-client
+		apk add mariadb mariadb-client
 
 # Copy MariaDB configuration to the container
-COPY 	conf/MariaDB.cnf /etc/my.cnf.d/MariaDB.cnf
+COPY 	./conf/MariaDB.cnf /etc/my.cnf.d/MariaDB.cnf
 RUN		chmod 644 /etc/my.cnf.d/MariaDB.cnf
 
 # Copy tools.sh script from the 'tools' directory to the container
