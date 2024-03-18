@@ -1,6 +1,9 @@
 all: up
 
 up:
+	@if ! sudo grep -q "127.0.0.1 dgerguri.42.fr" /etc/hosts; then \
+    	echo "127.0.0.1 dgerguri.42.fr" | sudo tee -a /etc/hosts; \
+	fi
 	# mkdir -p /home/dgerguri/data/wordpress_data
 	# mkdir -p /home/dgerguri/data/mariadb_data
 	mkdir -p /Users/dardangerguri/data/wordpress_data
