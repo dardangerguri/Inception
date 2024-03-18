@@ -26,3 +26,4 @@ EXPOSE 	443
 
 # Command to start NGINX
 ENTRYPOINT ["sh", "tools.sh"]
+
