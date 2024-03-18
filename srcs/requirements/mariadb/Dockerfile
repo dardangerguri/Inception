@@ -3,7 +3,7 @@ FROM	alpine:3.18
 
 # Install MariaDB
 RUN		apk update && \
-		apk add mariadb mariadb-client
+		apk add mariadb mariadb-client openrc
 
 # Copy MariaDB configuration to the container
 COPY 	./conf/MariaDB.cnf /etc/my.cnf.d/MariaDB.cnf
