@@ -12,7 +12,6 @@ RUN apk update && \
     apk add php81 php81-fpm php81-mysqli fcgi php81-phar wget php81-curl php81-xml php81-gd php-mbstring && \
     apk add mariadb-client
 
-
 # Download and install the WP-CLI tool
 RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     chmod +x wp-cli.phar && \
@@ -28,6 +27,7 @@ RUN wget https://wordpress.org/wordpress-6.0.tar.gz -P /var/www/html && \
 COPY conf/www.conf /etc/php81/php-fpm.d/www.conf
 RUN chmod 644 /etc/php81/php-fpm.d/www.conf
 
+# Set the working directory to the WordPress directory
 WORKDIR /var/www/html/wordpress
 
 # Copy the tools.sh script from the 'tools' directory to the container
@@ -39,5 +39,3 @@ EXPOSE 9000
 
 # Set the entrypoint to run the WordPress script
 ENTRYPOINT ["sh", "/usr/local/bin/tools.sh"]
-
-

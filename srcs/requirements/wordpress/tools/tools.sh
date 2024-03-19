@@ -5,68 +5,70 @@ echo "Starting WordPress setup script".
 while ! mariadb -h $DB_HOST -u $DB_USER -p$DB_PASSWORD $DB_DATABASE_NAME &>/dev/null;
 do
 	echo "Waiting for the database to be ready";
-	sleep 10;
+	sleep 3;
 done
-echo "ready!"
+	echo "Database is ready!"
 
-# Verify if the wordpress is installed
+# Verify if the wordpress is set up
 if [ -f wp-config.php ]; then
-	echo "WordPress: already installed"
+	echo "WordPress: already set up"
 else
-	echo "WordPress: installing"
+	echo "WordPress: setting up"
+
 	# Create the wordpress configuration file
 	wp config create \
-		--dbname=$DB_DATABASE_NAME \
-		--dbuser=$DB_USER \
-		--dbpass=$DB_PASSWORD \
-		--dbhost=$DB_HOST \
+		--dbname=${DB_DATABASE_NAME} \
+		--dbuser=${DB_USER} \
+		--dbpass=${DB_PASSWORD} \
+		--dbhost=${DB_HOST} \
 		--allow-root;
 
-	# Install the wordpress
+	# Set up WordPress with initial configuration
 	wp core install \
-		--url=https://$DOMAIN_NAME \
-		--title=$WP_TITLE \
-		--admin_user=$ADMIN_USER \
-		--admin_password=$ADMIN_PASSWORD \
-		--admin_email=$ADMIN_EMAIL \
+		--url=https://${DOMAIN_NAME} \
+		--title=${WP_TITLE} \
+		--admin_user=${ADMIN_USER} \
+		--admin_password=${ADMIN_PASSWORD} \
+		--admin_email=${ADMIN_EMAIL} \
+		--path=/var/www/html/wordpress/ \
 		--allow-root;
 
 	# Create an additional user with the role of author
 	wp user create \
-		$USER_LOGIN \
-		$USER_EMAIL \
+		${USER_LOGIN} \
+		${USER_EMAIL} \
 		--role=author \
-		--user_pass=$USER_PASSWORD \
-		--allow-root;
-		# --path=/var/www/html/wordpress	 \
+		--user_pass=${USER_PASSWORD} \
+		--allow-root \
+		--path=/var/www/html/wordpress;
 
-		# Refresh the wordpress cache
+	# Flush the WordPress cache
 	wp cache flush \
 		--allow-root;
-		# --path=/var/www/html/wordpress \
 
-		# Install the wordpress theme
+	# Install a WordPress theme
 	wp theme install \
-		twentynineteen \
+		inspiro \
 		--activate \
 		--allow-root;
-		# --path=/var/www/html/wordpress \
 
-	# Wordpress siteurl option
-	wp option update siteurl "https://$DOMAIN_NAME" \
+	# Update the WordPress site URL option
+	wp option update siteurl "https://${DOMAIN_NAME}" \
 		--allow-root;
-		# --path=/var/www/html/wordpress \
 
-	# Wordpress home option update
-	wp option update home "https://$DOMAIN_NAME" \
+	# Update the WordPress home option
+	wp option update home "https://${DOMAIN_NAME}" \
 		--allow-root;
-		# --path=/var/www/html/wordpress \
 
-	chown -R www-data:www-data /var/www/html
-	chmod -R 775 /var/www/html
+
+	# Display a message indicating that WordPress has been set up
 	echo "WordPress: installed"
 
 fi
 
-exec /usr/sbin/php-fpm81 -F -R
+# Set appropriate ownership and permissions for the WordPress directory
+chown -R www-data:www-data /var/www/html
+chmod -R 775 /var/www/html
 
+# Start PHP-FPM
+exec /usr/sbin/php-fpm81 -F
