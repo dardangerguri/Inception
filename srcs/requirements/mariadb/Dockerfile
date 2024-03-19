@@ -13,7 +13,7 @@ RUN		chmod 644 /etc/my.cnf.d/MariaDB.cnf
 COPY 	tools/tools.sh .
 RUN 	chmod +x tools.sh
 
-# Expose port
+# Expose port for MariaDB
 EXPOSE 	3306
 
 # Command to set up MariaDB
