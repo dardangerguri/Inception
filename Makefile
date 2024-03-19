@@ -1,21 +1,16 @@
+include srcs/.env
+export $(sed 's/=.*//' srcs/.env)
+
 all: up
 
-up:
-	@if ! sudo grep -q "127.0.0.1 dgerguri.42.fr" /etc/hosts; then \
-    	echo "127.0.0.1 dgerguri.42.fr" | sudo tee -a /etc/hosts; \
-	fi
-	# mkdir -p /home/dgerguri/data/wordpress_data
-	# mkdir -p /home/dgerguri/data/mariadb_data
-	mkdir -p /Users/dardangerguri/data/wordpress_data
-	mkdir -p /Users/dardangerguri/data/mariadb_data
-	docker-compose -f srcs/docker-compose.yml up -d --build
+up: setup
+	docker-compose -f srcs/docker-compose.yml up -d
+
+build: setup
+	docker-compose -f srcs/docker-compose.yml build
 
 down:
 	docker-compose -f srcs/docker-compose.yml down
-	# sudo rm -rf /home/dgerguri/data/mariadb_data
-	# sudo rm -rf /home/dgerguri/data/wordpress_data
-	sudo rm -rf /Users/dardangerguri/data/mariadb_data
-	sudo rm -rf /Users/dardangerguri/data/wordpress_data
 
 start:
 	docker-compose -f srcs/docker-compose.yml start
@@ -24,17 +19,29 @@ stop:
 	docker-compose -f srcs/docker-compose.yml stop
 
 status:
-	docker-compose ps
+	cd srcs && docker-compose ps && cd ..
 
 logs:
-	docker-compose -f srcs/docker-compose.yml logs
+	cd srcs && docker-compose logs && cd ..
+
+setup: ${WORDPRESS_VOLUME} ${MARIADB_VOLUME}
+	@if ! sudo grep -q "127.0.0.1 ${DOMAIN_NAME}" /etc/hosts; then \
+    	echo "127.0.0.1 ${DOMAIN_NAME}" | sudo tee -a /etc/hosts; \
+	fi
+
+${WORDPRESS_VOLUME}:
+	mkdir -p ${WORDPRESS_VOLUME}
+
+${MARIADB_VOLUME}:
+	mkdir -p ${MARIADB_VOLUME}
 
 clean:
-	docker-compose -f srcs/docker-compose.yml down --volumes --rmi all
+	sudo rm -rf ${DATA_PATH}
 
-fclean: clean
+fclean: down clean
+	# docker-compose -f srcs/docker-compose.yml down --volumes --rmi all
 	docker system prune -f -a --volumes --all
 
 re: down fclean up
 
-.PHONY: all up down stop start logs status clean fclean re
+.PHONY: all up down stop start logs status clean fclean re setup build
