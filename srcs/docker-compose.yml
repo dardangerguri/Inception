@@ -6,14 +6,14 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /Users/dardangerguri/data/mariadb_data
+      device: ${MARIADB_VOLUME}
       o: bind
   wordpress_data:
     name: wordpress_data
     driver: local
     driver_opts:
       type: none
-      device: /Users/dardangerguri/data/wordpress_data
+      device: ${WORDPRESS_VOLUME}
       o: bind
 
 networks:
