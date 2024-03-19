@@ -10,7 +10,7 @@ RUN		apk update && \
 RUN		mkdir -p /etc/nginx/ssl && \
 		mkdir -p /run/nginx
 
-# Add a new user within the container
+# Add a new user within the container for security purposes
 RUN		adduser -D -H -s /sbin/nologin www
 
 # Copy NGINX configuration to the container
@@ -26,4 +26,3 @@ EXPOSE 	443
 
 # Command to start NGINX
 ENTRYPOINT ["sh", "tools.sh"]
-
