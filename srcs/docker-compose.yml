@@ -24,6 +24,7 @@ services:
   nginx:
     container_name: nginx
     build: ./requirements/nginx
+    image: nginx:dgerguri
     env_file: .env
     depends_on:
       - wordpress
@@ -38,6 +39,7 @@ services:
   wordpress:
     container_name: wordpress
     build: ./requirements/wordpress
+    image: wordpress:dgerguri
     env_file: .env
     depends_on:
       - mariadb
@@ -50,6 +52,7 @@ services:
   mariadb:
     container_name: mariadb
     build: ./requirements/mariadb
+    image: mariadb:dgerguri
     env_file: .env
     networks:
       - inception
