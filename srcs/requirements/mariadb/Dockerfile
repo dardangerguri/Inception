@@ -6,8 +6,8 @@ RUN		apk update && \
 		apk add mariadb mariadb-client openrc
 
 # Copy MariaDB configuration to the container
-COPY 	./conf/MariaDB.cnf /etc/my.cnf.d/MariaDB.cnf
-RUN		chmod 644 /etc/my.cnf.d/MariaDB.cnf
+COPY 	./conf/my.cnf /etc/mariadb.conf.d/my.cnf
+RUN		chmod 644 /etc/mariadb.conf.d/my.cnf
 
 # Copy tools.sh script from the 'tools' directory to the container
 COPY 	tools/tools.sh .

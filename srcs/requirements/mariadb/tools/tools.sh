@@ -31,4 +31,4 @@ FLUSH PRIVILEGES;
 EOF
 
 # Start MySQL server with custom configuration
-exec mysqld --defaults-file=/etc/my.cnf.d/MariaDB.cnf --log-bin=/var/log/mysql/log-bin.log
+exec mysqld --defaults-file=/etc/mariadb.conf.d/my.cnf --log-bin=/var/log/mysql/log-bin.log
